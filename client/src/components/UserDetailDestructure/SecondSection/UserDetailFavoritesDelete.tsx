@@ -54,7 +54,7 @@ const UserDetailFavoritesDelete = (): JSX.Element => {
         <div className={styles['favorites-body']}>
           {userdetail.favorites !== undefined && userdetail.favorites[0]?.seller?.categoriesArray?.length > 0
             ? (
-            <Swiper modules={[Pagination, A11y, Autoplay]} className={style.swiper} spaceBetween={space} slidesPerView={slidesPerView} pagination={{ clickable: true }} autoplay={{ delay: 3000 }}>
+            <Swiper modules={[Pagination, A11y, Autoplay]} className={style.swipers} spaceBetween={space} slidesPerView={slidesPerView} pagination={{ clickable: true }} autoplay={{ delay: 3000 }}>
               {userdetail.favorites?.map(({ _id, seller }) => {
                 return (
                   <SwiperSlide key={_id} className={style.swiperslides}>
