@@ -1,25 +1,36 @@
 import express from 'express'
-import { userRouter, sellerRouter, serviceRouter, categoriesRouter, reviewsRouter, nodemailerRouter, paymentRouter, favoritesRouter, adminRouter } from './routes/index'
+import {
+  userRouter,
+  sellerRouter,
+  serviceRouter,
+  categoriesRouter,
+  reviewsRouter,
+  nodemailerRouter,
+  paymentRouter,
+  favoritesRouter,
+  adminRouter
+} from './routes/index'
 import { connectDB } from './db'
 import { logErrors } from './middlewares/logError.middleware'
-import cors, { CorsOptions } from 'cors'
+import cors from 'cors'
 import passport from 'passport'
 import passportMiddleware from './middlewares/passport'
 import session from 'express-session'
-import 'dotenv/config'
-const { TOKEN_ENCRYPTION, PORT } = process.env
 import cookieParser from 'cookie-parser'
+import 'dotenv/config'
+
+const { TOKEN_ENCRYPTION, PORT } = process.env
 
 const server = express()
-const corsOptions: CorsOptions = {
-  origin: '*',
-  credentials: true
-}
 
 server.use(cookieParser())
 server.use(express.json())
 
-server.use(cors(corsOptions))
+server.use(cors({
+  origin: '*',
+  credentials: true
+}))
+
 server.use(
   session({
     secret: TOKEN_ENCRYPTION!,
@@ -27,11 +38,9 @@ server.use(
     saveUninitialized: true
   })
 )
-passport.use(passportMiddleware)
 
-server.listen(PORT, () => {
-  console.log(`Server running  in PORT ${PORT}`)
-})
+passport.use(passportMiddleware)
+server.use(passport.initialize())
 
 server.use('/', userRouter)
 server.use('/', sellerRouter)
@@ -43,5 +52,17 @@ server.use('/', nodemailerRouter)
 server.use('/', favoritesRouter)
 server.use('/', adminRouter)
 
-server.use(passport.initialize())
 server.use(logErrors)
+
+connectDB()
+  .then(() => {
+    console.log('✅ MongoDB connected')
+
+    server.listen(PORT, () => {
+      console.log(`🚀 Server running on PORT ${PORT}`)
+    })
+  })
+  .catch(err => {
+    console.error('❌ MongoDB connection failed', err)
+    process.exit(1)
+  })
