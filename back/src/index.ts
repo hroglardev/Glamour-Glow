@@ -1,6 +1,6 @@
 import express from 'express'
 import { userRouter, sellerRouter, serviceRouter, categoriesRouter, reviewsRouter, nodemailerRouter, paymentRouter, favoritesRouter, adminRouter } from './routes/index'
-import './db'
+import { connectDB } from './db'
 import { logErrors } from './middlewares/logError.middleware'
 import cors, { CorsOptions } from 'cors'
 import passport from 'passport'
